@@ -1,8 +1,10 @@
 import scrapy
+from ..items import ShoeItem
 
 
 class TigerSpider(scrapy.Spider):
-    name = 'brand'
+    name = 'tiger'
+    allowed_domains = ['zappos.com']
     start_urls = ['https://www.zappos.com/b/onitsuka-tiger-by-asics/brand/421']
 
     def parse(self, response):
@@ -21,9 +23,13 @@ class TigerSpider(scrapy.Spider):
 
     def parse_shoes(self, response):
 
+        items = []
+
         for resp in response.xpath('.//div[@id="searchPage"]').css('article._1h6Kf'):
-            yield {
-                'brand': resp.xpath('.//a/div[@class="_2jktc"]/p[@class="_1HOLv"]/span/text()').extract_first(),
-                'name': resp.xpath('.//a/div[@class="_2jktc"]/p[@class="_3BAWv"]/text()').extract_first(),
-                'price': resp.xpath('.//a/div[@class="_2jktc"]/p[@class="_1J1ab"]/span/text()').extract_first(),
-            }
+            item = ShoeItem()
+            item['brand'] = resp.xpath('.//a/div[@class="_2jktc"]/p[@class="_1HOLv"]/span/text()').extract_first()
+            item['name'] = resp.xpath('.//a/div[@class="_2jktc"]/p[@class="_3BAWv"]/text()').extract_first()
+            item['price'] = resp.xpath('.//a/div[@class="_2jktc"]/p[@class="_1J1ab"]/span/text()').extract_first()
+            items.append(item)
+
+        return items
