@@ -4,6 +4,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os.path
+import configparser
 
 
 def read_results(result_file, recipient):
@@ -26,8 +27,11 @@ def process_results(result_list, recipient):
 def send_mail(message, title, recipient):
     print("Sending mail to %s" % recipient)
 
-    user = '***'
-    password = '***'
+    parser = configparser.ConfigParser()
+    parser.read('simple.ini')
+
+    user = parser['DEFAULT']['Username']
+    password = parser['DEFAULT']['Password']
 
     message_str = str(message)
 
